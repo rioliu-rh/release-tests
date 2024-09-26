@@ -1,0 +1,45 @@
+﻿apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: build-image-for-oar
+  namespace: pipelines-oar
+spec:
+  params:
+    - name: git-url
+      type: string
+    - default: master
+      name: git-revision
+      type: string
+    - name: IMAGE
+      type: string
+  tasks:
+    - name: fetch-repo
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: subdirectory
+          value: ""
+        - name: deleteExisting
+          value: "true"
+        - name: revision
+          value: $(params.git-revision)
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+    - name: build-image
+      params:
+        - name: IMAGE
+          value: $(params.IMAGE)
+      runAfter:
+        - fetch-repo
+      taskRef:
+        kind: ClusterTask
+        name: buildah
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+  workspaces:
+    - name: shared-workspace

@@ -1,0 +1,43 @@
+﻿apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: oarcli
+  namespace: pipelines-oar
+spec:
+  params:
+    - name: oarcmd
+      type: string
+  steps:
+    - command:
+        - oar
+      computeResources: {}
+      image: "image-registry.openshift-image-registry.svc:5000/pipelines-oar/oarcli:latest"
+      name: get-cmd-usage
+    - args:
+        - update-ca-trust extract;echo $(BZ_API_KEY)| bugzilla login --api-key;$(params.oarcmd)
+      command:
+        - /bin/bash
+        - "-c"
+      computeResources: {}
+      env:
+        - name: GCP_SA_FILE
+          value: /etc/conf/oar/GCP_SA_FILE
+        - name: GCS_CRED_FILE
+          value: /etc/conf/oar/GCS_CRED_FILE
+      envFrom:
+        - secretRef:
+            name: oar-conf-tokens
+      image: "image-registry.openshift-image-registry.svc:5000/pipelines-oar/oarcli:latest"
+      name: test-execution
+      volumeMounts:
+        - mountPath: /etc/conf/oar
+          name: oar-conf-files
+        - mountPath: /etc/pki/ca-trust/source/anchors
+          name: it-root-ca
+  volumes:
+    - name: oar-conf-files
+      secret:
+        secretName: oar-conf-files
+    - name: it-root-ca
+      secret:
+        secretName: it-root-ca

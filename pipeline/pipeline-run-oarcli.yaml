@@ -1,0 +1,17 @@
+﻿apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: run-oarcli
+  namespace: pipelines-oar
+spec:
+  params:
+    - name: oarcmd
+      type: string
+  tasks:
+    - name: execute
+      params:
+        - name: oarcmd
+          value: $(params.oarcmd)
+      taskRef:
+        kind: Task
+        name: oarcli
