@@ -10,7 +10,6 @@ spec:
   steps:
     - command:
         - oar
-      computeResources: {}
       image: "image-registry.openshift-image-registry.svc:5000/pipelines-oar/oarcli:latest"
       name: get-cmd-usage
     - args:
@@ -18,7 +17,6 @@ spec:
       command:
         - /bin/bash
         - "-c"
-      computeResources: {}
       env:
         - name: GCP_SA_FILE
           value: /etc/conf/oar/GCP_SA_FILE
