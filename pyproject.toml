@@ -19,7 +19,7 @@ authors = [
 ]
 description = "CLI tool for automating QE z-stream release tasks"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 keywords = ["openshift", "oar"]
 license.file = "LICENSE"
 classifiers = [
@@ -46,7 +46,8 @@ dependencies = [
     "rh-doozer@git+https://github.com/openshift-eng/art-tools.git@main#subdirectory=doozer",
     "langchain-community",
     "openai",
-    "ldap3 >= 2.9.1"
+    "ldap3 >= 2.9.1",
+    "mcp[cli]>=0.9.1",
 ]
 
 [project.scripts]
