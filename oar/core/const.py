@@ -127,3 +127,6 @@ JENKINS_QUEUE_ITEM_ATTR_BLOCKED = "blocked"
 JENKINS_QUEUE_ITEM_ATTR_URL = "url"
 JENKINS_PARAM_PAYLOAD_URL = "PAYLOAD_URL"
 JENKINS_PARAM_PULL_SPEC = "PULL_SPEC"
+
+# logger format
+LOGGER_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"

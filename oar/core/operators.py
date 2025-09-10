@@ -179,9 +179,8 @@ class ApprovalOperator:
                 log_entry = self.format(record)
                 self.log_messages.append(log_entry)
         
-        # Add the capture handler to the logger
         capture_handler = LogCaptureHandler(log_messages)
-        capture_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+        capture_handler.setFormatter(logging.Formatter(LOGGER_FORMAT))
         logger.addHandler(capture_handler)
         
         # Get test report for current release
@@ -216,6 +215,8 @@ class ApprovalOperator:
                     else:
                         logger.info(f"Scheduler check #{check_count}: Payload metadata URL still not accessible")
                 
+                print("\n".join(log_messages))
+
                 # Schedule the check to run every 30 minutes
                 schedule.every(30).minutes.do(check_metadata_accessibility)
                 logger.info("Scheduler started: Checking payload metadata URL every 30 minutes")
@@ -302,9 +303,6 @@ class ApprovalOperator:
             
             # Send error notification with full logs including summary
             self._send_completion_notification(minor_release, success=False, error=str(e), log_messages=log_messages)
-        finally:
-            # Remove the capture handler
-            logger.removeHandler(capture_handler)
 
     def _send_completion_notification(self, minor_release: str, success: bool, error: str = None, log_messages: list = None) -> None:
         """
@@ -373,10 +371,12 @@ class ApprovalOperator:
                 
                 # Launch background process for metadata checking using subprocess for true independence
                 # Create a command to run the background checker as a separate process
+                # Calculate the base path for the oar module
+                base_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
                 cmd = [
                     sys.executable, 
                     "-c", 
-                    f"import sys; sys.path.insert(0, '{os.path.dirname(os.path.dirname(os.path.dirname(__file__)))}'); from oar.core.operators import ApprovalOperator; from oar.core.configstore import ConfigStore; cs = ConfigStore('{self._am._cs.release}'); op = ApprovalOperator(cs); op._background_metadata_checker('{minor_release}')"
+                    f"import sys; sys.path.insert(0, '{base_path}'); from oar.core.operators import ApprovalOperator; from oar.core.configstore import ConfigStore; cs = ConfigStore('{self._am._cs.release}'); op = ApprovalOperator(cs); op._background_metadata_checker('{minor_release}')"
                 ]
                 
                 # Create environment with current environment - OAR_SLACK_* variables will be automatically

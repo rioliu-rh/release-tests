@@ -8,6 +8,7 @@ from semver.version import Version
 from urllib.parse import urlparse
 from subprocess import CalledProcessError
 from requests.exceptions import RequestException
+from oar.core.const import LOGGER_FORMAT
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +49,7 @@ def get_release_key(version):
 
 def init_logging(log_level=logging.INFO):
     logging.basicConfig(
-        format="%(asctime)s: %(levelname)s: %(message)s",
+        format=LOGGER_FORMAT,
         datefmt="%Y-%m-%dT%H:%M:%SZ",
         level=log_level,
     )
