@@ -642,7 +642,7 @@ class ReleaseShipmentOperator:
             if rpm_ad:
                 rpm_state = rpm_ad.get_state()
                 details["rpm_advisory"] = rpm_state
-                if rpm_state not in [AD_STATUS_REL_PREP, "SHIPPED_LIVE", "PUSHED_LIVE"]:
+                if rpm_state not in [AD_STATUS_REL_PREP, AD_STATUS_SHIPPED_LIVE, AD_STATUS_PUSHED_LIVE]:
                     all_shipped = False
             else:
                 details["rpm_advisory"] = "not found"
@@ -658,7 +658,7 @@ class ReleaseShipmentOperator:
             if rhcos_ad:
                 rhcos_state = rhcos_ad.get_state()
                 details["rhcos_advisory"] = rhcos_state
-                if rhcos_state not in [AD_STATUS_REL_PREP, "SHIPPED_LIVE", "PUSHED_LIVE"]:
+                if rhcos_state not in [AD_STATUS_REL_PREP, AD_STATUS_SHIPPED_LIVE, AD_STATUS_PUSHED_LIVE]:
                     all_shipped = False
             else:
                 details["rhcos_advisory"] = "not found"
@@ -695,7 +695,7 @@ class ReleaseShipmentOperator:
                     details[f"advisory_{impetus}"] = ad_state
 
                     # Check if advisory is in REL_PREP or higher state
-                    if ad_state not in [AD_STATUS_REL_PREP, "SHIPPED_LIVE", "PUSHED_LIVE"]:
+                    if ad_state not in [AD_STATUS_REL_PREP, AD_STATUS_SHIPPED_LIVE, AD_STATUS_PUSHED_LIVE]:
                         all_shipped = False
                         logger.warning(f"Advisory {errata_id} ({impetus}) is in state {ad_state}, not ready for ship")
                 except Exception as e:
